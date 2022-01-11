@@ -67,7 +67,7 @@ dist/swig.js:
 
 dist/swig.min.js:
 	@echo "Building $@..."
-	@${BIN}/uglifyjs $^ --comments -c warnings=false -m --source-map dist/swig.js.map > $@
+	@${BIN}/uglifyjs $^ --comments -c -m --source-map url=inline > $@
 
 browser/test/tests.js:
 	@echo "Building $@..."
@@ -82,8 +82,8 @@ opts =
 test:
 	@${BIN}/mocha --check-leaks --reporter ${reporter} ${opts} ${tests}
 
-test-browser: FORCE clean browser/test/tests.js
-	@${BIN}/mocha-phantomjs browser/test/index.html --reporter ${reporter}
+# test-browser: FORCE clean browser/test/tests.js
+# 	@${BIN}/mocha-phantomjs browser/test/index.html --reporter ${reporter}
 
 files := $(shell find . -name '*.js' ! -path "./node_modules/*" ! -path "./dist/*" ! -path "./browser*" ! -path "./docs*" ! -path "./tmp*")
 lint:
