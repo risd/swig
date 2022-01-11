@@ -1,6 +1,6 @@
 {
   "name": "@risd/swig",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "A simple, powerful, and extendable templating engine for node.js and browsers, similar to Django, Jinja2, and Twig.",
   "keywords": [
     "template",
@@ -21,7 +21,7 @@
     "uglify-js": "^3.14.5"
   },
   "devDependencies": {
-    "@risd/still": "^0.0.8",
+    "@risd/still": "^0.0.9",
     "blanket": "~1.1",
     "browserify": "^17.0.0",
     "expect.js": "~0.2",
