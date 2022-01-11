@@ -1,36 +1,37 @@
 #!/usr/bin/env node
 /*jslint es5: true */
 
-var swig = require('../index'),
-  optimist = require('optimist'),
-  fs = require('fs'),
-  path = require('path'),
-  filters = require('../lib/filters'),
-  utils = require('../lib/utils'),
-  uglify = require('uglify-js');
+const swig = require('../index')
+const yargs = require('yargs/yargs')
+const fs = require('fs')
+const path = require('path')
+const filters = require('../lib/filters')
+const utils = require('../lib/utils')
+const uglify = require('uglify-js')
 
-var command,
-  wrapstart = 'var tpl = ',
-  argv = optimist
+let wrapstart = 'var tpl = '
+
+const argv = yargs(process.argv.slice(2))
     .usage('\n Usage:\n' +
       '    $0 compile [files] [options]\n' +
       '    $0 run [files] [options]\n' +
       '    $0 render [files] [options]\n'
       )
-    .describe({
-      v: 'Show the Swig version number.',
-      o: 'Output location.',
-      h: 'Show this help screen.',
-      j: 'Variable context as a JSON file.',
-      c: 'Variable context as a CommonJS-style file. Used only if option `j` is not provided.',
-      m: 'Minify compiled functions with uglify-js',
-      'filters': 'Custom filters as a CommonJS-style file',
-      'tags': 'Custom tags as a CommonJS-style file',
-      'options': 'Customize Swig\'s Options from a CommonJS-style file',
-      'wrap-start': 'Template wrapper beginning for "compile".',
-      'wrap-end': 'Template wrapper end for "compile".',
-      'method-name': 'Method name to set template to and run from.'
-    })
+    .command('compile', 'compile swig')
+    .command('run', 'run swig')
+    .command('render', 'render swig')
+    .describe('v', 'Show the Swig version number.')
+    .describe('o', 'Output location.')
+    .describe('h', 'Show this help screen.')
+    .describe('j', 'Variable context as a JSON file.')
+    .describe('c', 'Variable context as a CommonJS-style file. Used only if option `j` is not provided.')
+    .describe('m', 'Minify compiled functions with uglify-js')
+    .describe('filters', 'Custom filters as a CommonJS-style file')
+    .describe('tags', 'Custom tags as a CommonJS-style file')
+    .describe('options', 'Customize Swig\'s Options from a CommonJS-style file')
+    .describe('wrap-start', 'Template wrapper beginning for "compile".')
+    .describe('wrap-end', 'Template wrapper end for "compile".')
+    .describe('method-name', 'Method name to set template to and run from.')
     .alias('v', 'version')
     .alias('o', 'output')
     .default('o', 'stdout')
@@ -41,42 +42,28 @@ var command,
     .default('wrap-start', wrapstart)
     .default('wrap-end', ';')
     .default('method-name', 'tpl')
-    .check(function (argv) {
-      if (argv.v) {
-        return;
-      }
-
-      if (!argv._.length) {
-        throw new Error('');
-      }
-
-      command = argv._.shift();
-      if (command !== 'compile' && command !== 'render' && command !== 'run') {
-        throw new Error('Unrecognized command "' + command + '". Use -h for help.');
-      }
-
-      if (argv['method-name'] !== 'tpl' && argv['wrap-start'] !== wrapstart) {
-        throw new Error('Cannot use arguments "--method-name" and "--wrap-start" together.');
-      }
-
-      if (argv['method-name'] !== 'tpl') {
-        argv['wrap-start'] = 'var ' + argv['method-name'] + ' = ';
-      }
-    })
-    .argv,
-  ctx = {},
-  out = function (file, str) {
-    console.log(str);
-  },
-  efn = function () {},
-  anonymous,
-  files,
-  fn;
+    .demand(1, 'must provide a valid command')
+    .argv
+let ctx = {}
+let out = function (file, str) {
+  console.log(str)
+}
+let efn = function () {}
+let fn
+let command = argv._[0]
 
 // What version?
 if (argv.v) {
   console.log(require('../package').version);
   process.exit(0);
+}
+
+if (argv['method-name'] !== 'tpl' && argv['wrap-start'] !== wrapstart) {
+  throw new Error('Cannot use arguments "--method-name" and "--wrap-start" together.');
+}
+
+if (argv['method-name'] !== 'tpl') {
+  argv['wrap-start'] = 'var ' + argv['method-name'] + ' = ';
 }
 
 // Pull in any context data provided
@@ -132,7 +119,7 @@ case 'compile':
     r = argv['wrap-start'] + r + argv['wrap-end'];
 
     if (argv.m) {
-      r = uglify.minify(r, { fromString: true }).code;
+      r = uglify.minify(r).code;
     }
 
     out(file, r);
