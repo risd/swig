@@ -30,19 +30,7 @@ for FILE in `exec git diff-index --check --cached $against -- | sed '/^[+-]/d' |
     git add $FILE
 done
 
-echo 'Running JSLint...'
-result=$(make lint)
-if ! egrep "(^|[^\d])0 errors" <<< "$result"; then
-    num=$(grep "[0-9]+ error" <<< "$result")
-    testFail "JSLint: $num"
-    echo "$result"
-    echo ''
-    lintFailed=1
-fi
-
-if [[ $lint_errors -gt 0 ]]; then
-    failCommit "Lint Errors"
-fi
+echo 'Skipping linter. considering migrating to ESLint instead of JSLint which throws an internal error upon execution...'
 
 echo 'Running Tests...'
 result=$(make test)
@@ -54,6 +42,6 @@ if grep -q FAILURES <<< $result; then
     testsFailed=1
 fi
 
-if [[ $testsFailed || $lintFailed ]]; then
+if [[ $testsFailed ]]; then
     failCommit "Unable To Commit"
 fi
