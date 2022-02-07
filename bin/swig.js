@@ -143,7 +143,7 @@ case 'render':
   break;
 }
 
-argv._.forEach(function (file) {
+argv._.slice(1).forEach(function (file) {
   var str = fs.readFileSync(file, 'utf8');
   fn(file, str);
 });
