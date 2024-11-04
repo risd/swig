@@ -1,7 +1,7 @@
-NOT MAINTAINED
+@risd/swig
 ====
 
-Fork and use at your own risk.
+A maintenance fork of [swig](https://www.npmjs.com/package/swig).
 
 
 Swig [![Build Status](http://img.shields.io/travis/paularmstrong/swig/master.svg?style=flat)](http://travis-ci.org/paularmstrong/swig) [![Dependency Status](http://img.shields.io/gemnasium/paularmstrong/swig.svg?style=flat)](https://gemnasium.com/paularmstrong/swig) [![NPM version](http://img.shields.io/npm/v/swig.svg?style=flat)](https://www.npmjs.org/package/swig) [![NPM Downloads](http://img.shields.io/npm/dm/swig.svg?style=flat)](https://www.npmjs.org/package/swig)
